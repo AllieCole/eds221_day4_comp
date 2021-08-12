@@ -192,8 +192,48 @@ lunchtime(tacos = 4, price_per =  2.5)
 # lunchtime(tacos = "hi", price_per =  2.5)
 ```
 
+### Use values from a data frame to calculte something based on user input 
+
+```{r}
+# calculate the ground water transpot rate with the filter function
 
 
+gw_rate <- function(site){
+  
+  gw_slopes_depths <- data.frame(sitename = c("Mountian", "Prarie", "Desert", "Beach"), 
+                                 depth = c(32, 41, 63, 2), 
+                                 slope = c(11.2, 0.4, 0.8, 2.6))
+  
+  site_select <- filter(gw_slopes_depths, sitename == site)
+  
+  transport_rate <- 1.4 * site_select$slope + 3.6 * site_select$depth
+  
+  return(transport-rate)
+}
+
+gw_rate(site = "Prarie")
+
+
+```
+
+
+```{r}
+# now we are going to do the exact same thing but use switch 
+
+gw_rate_switch <- function(site) {
+  
+  gw_slopes_depths <- switch(site, 
+                             "Mountian" = c(32, 11.2), 
+                             "Prarie" = c(41, 0.4), 
+                             "Desert" = c(63, 0.8), 
+                             "Beach" = c(2, 2.6))
+  transport_rate <- 1.4 * gw_slopes_depths[2] + 3.6 * gw_slopes_depths[1]
+  return(transport_rate)
+}
+
+gw_rate_switch(site = "Prarie")
+
+```
 
 
 
