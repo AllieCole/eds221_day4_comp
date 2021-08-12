@@ -235,10 +235,73 @@ gw_rate_switch(site = "Prarie")
 
 ```
 
+```{r}
+  
+logistic_growth <- function(K, N0, r, time) {
+  
+  Nt <- K / (1 + ((K - N0)/ N0) * exp(-r * time))
+  print(Nt)
+}
+
+logistic_growth(K = 5000, N0 = 200, r = 0.43, time = 6)
+
+time_vec <- seq(from = 0, to = 35, by = 0.1)
+
+bac_growth <- logistic_growth(K = 5000, N0 = 200, r = 0.43, time = time_vec)
+
+bac_df <- data.frame(time_vec, bac_growth)
 
 
+```
 
 
+```{r}
+ggplot(data = bac_df, aes(x = time_vec, y = bac_growth)) +
+  geom_jitter()
+```
+
+
+```{r}
+r_seq <- seq(from = 0.20, to = 0.40, by = 0.01)
+time_vec <- seq(from = 0, to = 35, by = 0.1) #same as above 
+
+out_matrix <- matrix(ncol = length(r_seq), nrow = length(time_vec))
+
+# N0 = 100 K = 6000
+
+for (i in seq_along(r_seq)) {
+  for (j in seq_along(time_vec)) {
+    pop <- logistic_growth(K = 600, N0 = 100, r = r_seq[i], time = time_vec[j])
+    out_matrix[j, i] <- pop
+  }
+}
+ out_matrix
+```
+
+### now a little wrangling
+
+```{r}
+# attach the time vector as teh first column of our out_matrix 
+
+out_df <- data.frame(time = time_vec, out_matrix)
+
+#give columns good names 
+
+colnames(out_df) <- c("time", paste0("gr_", r_seq))
+
+#make it long form (or tidy version) for using pivot longer 
+
+out_df_long <- out_df %>% 
+  pivot_longer(-time, names_to = "growth_rate", values_to = "population")
+```
+
+### Plotting it!
+
+
+```{r}
+ggplot(data = out_df_long, aes(x = time, y = population)) +
+  geom_line(aes(color = growth_rate))
+```
 
 
 
