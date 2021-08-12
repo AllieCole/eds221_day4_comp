@@ -1,0 +1,211 @@
+---
+title: "For Loop practice"
+author: "Allie Cole"
+date: "8/12/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(palmerpenguins)
+```
+
+### Code warm up 
+
+```{r}
+
+quater_splits <- c(1, 1.1, 1.2, 1.1, 1.4, 1.5, 1.6, 1.4)
+
+vec_run <- vector(mode = "numeric", length = length(quater_splits) - 1)
+
+for (i in seq_along(quater_splits) - 1) {
+  p <- (quater_splits[i] + quater_splits[i +1])
+  vec_run[i] <- p
+}
+
+```
+
+### Writing some functions, basics
+
+```{r}
+
+birddog_sum <- function(bird, dog) { #needs these two arguements to work 
+  add_birddog <- bird + dog  #this is what teh function will do 
+  return(add_birddog) #this is what it will return 
+}
+
+birddog_sum(bird = 100, dog = 5)
+
+birddog_sum(bird = "hawk", dog = 10) #cant do this! r will give you an error
+```
+
+### adding messages and error notifications
+
+```{r}
+birddog_sum <- function(bird, dog) { 
+  
+  if (bird > 50) {
+    stop("Birds cant be greater than 50!") #this is an error and will stop your code from running 
+  }
+  
+  if(bird <10 ) {
+    message("cool little bird")  #this is just a message 
+  }
+  
+  if(dog <0) {
+    warning("Can a dog be less than zero?")  #this si a warning 
+  }
+  
+  add_birddog <- bird + dog   
+  return(add_birddog)  
+}
+
+birddog_sum(bird = 7, dog = 5)
+
+birddog_sum(bird = "hawk", dog = 10)
+```
+
+
+
+### function with strings 
+
+
+```{r}
+say_hello <- function(friend, weekday) {
+  print(paste("Hello,", friend, "have a great", weekday))
+}
+
+say_hello(friend = "Sarah", weekday = "Thursday")
+
+```
+
+
+### Print v return example 
+
+```{r}
+
+find_multiple <- function(a, b) {
+  my_mult <- a * b 
+  print(my_mult)
+}
+
+find_multiple(a= 3, b = 4)
+
+
+
+```
+
+### functions with conditions 
+
+what you want the function to do can change based on what you are putting into it 
+
+```{r}
+animal_age <- function(animal, age) {
+  
+  if (!animal %in% c("dog", "goat")) {  #using the in operator! 
+    warning("Animal must be a dog or a goat")
+  }
+  
+  if (animal == "dog") {
+    creature_age <- age * 7
+  }
+  
+  else if (animal == "goat") {
+    creature_age <- age * 4.7
+  }
+  
+  return(creature_age)
+}
+
+animal_age(animal = "dog", age = 4)
+
+# animal_age(animal = "hawk", age =  3) #will break! also if you put numbers 
+```
+
+### looking at %in%
+
+
+```{r}
+adelie_gentoo <- penguins %>% 
+  filter(species %in% c("Adelie", "Gentoo")) # look in every row in species colum does it match A or G 
+#this will look in any row for Adelie or Gentoo 
+```
+
+
+```{r}
+adelie_gentoo_wrong <- penguins %>% 
+  filter(species == c("Adelie", "Gentoo"))
+
+# when I say look for an exact match with a vector, it is looking for an exact match with the order Adelie and then Gentoo. if not it will be rejected 
+
+# could do this, 
+
+adelie_gentoo_wrong <- penguins %>% 
+  filter(species == "Adelie" | species == "Gentoo") # but this will take forever if you have lots of stuff
+```
+
+### functions with for loops 
+
+```{r}
+df_means <- function(df) {
+  
+  for (i in 1:ncol(df)) {
+    col_mean <- mean(df[[i]], na.rm = TRUE) 
+    col_name <- colnames(df[i])
+    print(paste("The mean value that", col_name, "is", col_mean))
+  }
+}
+
+df_means(df = mtcars)
+
+# upate the function so that for each iteration is returns the phrase "The mean value that column name 
+```
+
+### making a subset of only teh structural size variablles from teh penguins data set for chinstrap
+
+```{r}
+chinstrap_sizes <- penguins %>% 
+  filter(species == "Chinstrap") %>% 
+  select(bill_length_mm, flipper_length_mm, bill_depth_mm, body_mass_g)
+
+#now lets use our new function
+
+df_means(df = chinstrap_sizes)
+```
+
+### condtion to check teh class of an input 
+
+```{r}
+lunchtime <- function(tacos, price_per) {
+  
+  if (is.numeric(tacos) == FALSE) {
+    stop("you must input a number of tacos")
+  }
+  
+  total_price <- tacos * price_per
+  return(total_price)
+}
+
+lunchtime(tacos = 4, price_per =  2.5)
+
+# lunchtime(tacos = "hi", price_per =  2.5)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
